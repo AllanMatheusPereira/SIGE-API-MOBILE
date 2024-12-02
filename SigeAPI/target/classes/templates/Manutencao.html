@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manutenção de vaga</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 500px;
+            padding: 30px;
+            background-color: #4fb3bf;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .container h1 {
+            font-size: 28px;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            background-color: white;
+            border: 6px solid #f40000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon span {
+            font-size: 40px;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 16px;
+            color: white;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 20px;
+            background-color: #f3f3f3;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .button-container button {
+            width: 30%;
+            padding: 12px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .button-container .back-button {
+            background-color: white;
+            color: #333;
+        }
+
+        .button-container .back-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .button-container .back-button:nth-child(2) {
+            background-color: #ffeb3b;
+            color: #333;
+        }
+
+        .button-container .back-button:nth-child(2):hover {
+            background-color: #fdd835;
+        }
+
+        .button-container .login-button {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .button-container .login-button:hover {
+            background-color: #43a047;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="icon">
+        <span>E</span>
+    </div>
+    <h1>Manutenção</h1>
+    <div class="form-group">
+        <label for="nvaga">Número da vaga:</label>
+        <input type="number" id="nvaga" placeholder="Digite o número da vaga...">
+    </div>
+
+    <div class="form-group">
+        <label for="motivo">Motivo da manutenção:</label>
+        <input type="text" id="motivo" placeholder="Digite o motivo...">
+    </div>
+
+    <div class="button-container">
+        <button class="back-button" onclick="window.location.href='/VoltarManutencao'">Voltar</button>
+        <button class="login-button" onclick="confirmarManutencao()">Confirmar</button>
+    </div>
+</div>
+
+<script>
+    function confirmarManutencao() {
+        const vagaId = parseInt(document.getElementById("nvaga").value, 10);
+        const motivo = document.getElementById("motivo").value;
+
+        // Validação de campos obrigatórios
+        if (!vagaId || !motivo) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
+
+        fetch('/api/vagas/manutencao', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                vaga: vagaId,
+                motivo: motivo
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erro na solicitação: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success === "true") {
+                    alert(data.message);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Erro:", error);
+                alert("Ocorreu um erro ao comunicar com o servidor. Tente novamente.");
+            });
+    }
+</script>
+
+</body>
+</html>
